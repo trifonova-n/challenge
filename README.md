@@ -22,6 +22,7 @@ handle empty countour sequence.
 
 Yes, I added SkipSampleError exception in case there is error loading some sample. In this case we skip this sample.
 - How do you/did you verify that the pipeline was working correctly?
+
 First I checked that DataLoader returns batches of required sizes. Then I created test to check 
 that loaded in batches data correspondes to data in Dataset (if shuffle is turned off).
 - Given the pipeline you have built, can you see any deficiencies that you would change if you had more time? 

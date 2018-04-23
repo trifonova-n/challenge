@@ -67,6 +67,7 @@ def poly_to_mask(polygon, width, height):
 
     # http://stackoverflow.com/a/3732128/1410871
     img = Image.new(mode='L', size=(width, height), color=0)
-    ImageDraw.Draw(img).polygon(xy=polygon, outline=0, fill=1)
+    if polygon:
+        ImageDraw.Draw(img).polygon(xy=polygon, outline=0, fill=1)
     mask = np.array(img).astype(bool)
     return mask

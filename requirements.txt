@@ -4,3 +4,4 @@ pydicom == 1.0.2
 pytest == 3.5.0
 jupyter == 1.0.0
 matplotlib == 2.2.2
+pandoc

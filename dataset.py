@@ -1,6 +1,9 @@
 from parsing import parse_contour_file, parse_dicom_file, poly_to_mask
 from pathlib import Path
-from pydicom.data import get_testdata_files
+
+
+class SkipSampleError(Exception):
+    pass
 
 
 class DICOMDataset(object):
@@ -46,6 +49,8 @@ class DICOMDataset(object):
         :return: dictionary with fields 'pixel_data' and 'mask'
         """
         sample = parse_dicom_file(self.filenames[index][0])
+        if sample is None:
+            raise SkipSampleError()
         contour = parse_contour_file(self.filenames[index][1])
         if self.transform:
             sample['pixel_data'], contour = self.transform(sample['pixel_data'], contour)

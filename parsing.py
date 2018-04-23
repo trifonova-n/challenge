@@ -1,7 +1,7 @@
 """Parsing code for DICOMS and contour files"""
 
-import dicom
-from dicom.errors import InvalidDicomError
+import pydicom
+from pydicom.errors import InvalidDicomError
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -35,7 +35,7 @@ def parse_dicom_file(filename):
     """
 
     try:
-        dcm = dicom.read_file(filename)
+        dcm = pydicom.read_file(filename)
         dcm_image = dcm.pixel_array
 
         try:

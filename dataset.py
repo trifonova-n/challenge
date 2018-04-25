@@ -11,7 +11,8 @@ class DICOMDataset(object):
     Dataset class to access DICOM images and masks.
     Each element is dictionary with fields 'pixel_data' and 'mask'
     :param path: path to directory containing link.csv
-    :param transform (callable, optional): if specified, called for each image, contour pair
+    :param transform (callable, optional): if specified, called for each
+           sample with fields 'pixel_data', 'icontour' and 'ocontour'
     :param only_complete (bool) if True, load only elements containing both icontour and ocontour
     """
     def __init__(self, path, transform=None, only_complete=True):

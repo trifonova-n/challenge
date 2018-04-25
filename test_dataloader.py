@@ -38,19 +38,28 @@ def test_poly_to_mask():
 def test_dataset(tmpdir):
     # create fake dataset
     tmpdir.join('link.csv').write('patient_id,original_id\nSCD0000101,SC-HF-I-1\n')
-    contours_path = tmpdir.mkdir('contourfiles').mkdir('SC-HF-I-1').mkdir('i-contours')
-    contours_path.join('IM-0001-0002-icontour-manual.txt').write('2. 1.\n20. 30.\n 10. 10.')
-    contours_path.join('IM-0001-0022-icontour-manual.txt').write('22. 1.\n20. 30.\n 10. 10.')
-    contours_path.join('IM-0001-0042-icontour-manual.txt').write('42. 1.\n20. 30.\n 10. 10.')
+    icontours_path = tmpdir.mkdir('contourfiles').mkdir('SC-HF-I-1').mkdir('i-contours')
+    icontours_path.join('IM-0001-0002-icontour-manual.txt').write('2. 1.\n20. 30.\n 10. 10.')
+    icontours_path.join('IM-0001-0022-icontour-manual.txt').write('22. 1.\n20. 30.\n 10. 10.')
+    icontours_path.join('IM-0001-0042-icontour-manual.txt').write('42. 1.\n20. 30.\n 10. 10.')
+    icontours_path.join('IM-0001-0099-icontour-manual.txt').write('99. 1.\n20. 30.\n 10. 10.')
+    ocontours_path = tmpdir.join('contourfiles').join('SC-HF-I-1').mkdir('o-contours')
+    ocontours_path.join('IM-0001-0002-ocontour-manual.txt').write('2. 1.\n20. 30.\n 10. 10.')
+    ocontours_path.join('IM-0001-0022-ocontour-manual.txt').write('22. 1.\n20. 30.\n 10. 10.')
+    ocontours_path.join('IM-0001-0042-ocontour-manual.txt').write('42. 1.\n20. 30.\n 10. 10.')
     dicoms_path = tmpdir.mkdir('dicoms').mkdir('SCD0000101')
     dicoms_path.join('1.dcm').write('1')
     dicoms_path.join('2.dcm').write('2')
     dicoms_path.join('42.dcm').write('42')
+    dicoms_path.join('99.dcm').write('99')
 
-    dataset = DICOMDataset(str(tmpdir))
+    dataset = DICOMDataset(str(tmpdir), only_complete=True)
     assert len(dataset) == 2
     with pytest.raises(SkipSampleError):
         dataset[0]
+
+    dataset = DICOMDataset(str(tmpdir), only_complete=False)
+    assert len(dataset) == 3
 
 
 def test_dataloader():
@@ -62,3 +71,5 @@ def test_dataloader():
     for ib, batch in enumerate(loader):
         for i in range(batch['pixel_data'].shape[0]):
             assert (batch['pixel_data'][i, :, :] == data[ib*batch_size + i]['pixel_data']).all()
+            assert (batch['imask'][i, :, :] == data[ib*batch_size + i]['imask']).all()
+            assert (batch['omask'][i, :, :] == data[ib*batch_size + i]['omask']).all()
